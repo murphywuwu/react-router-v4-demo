@@ -1,59 +1,61 @@
 import React, { Component } from 'react';
 import { Link, Route,Switch, Redirect } from 'react-router-dom';
 import ShowTheLocation from './ShowTheLocation';
+import { renderRoutes } from 'react-router-config'
 
-class App extends Component {
-  render() {
-    
-    return (
-      <div>
-        <nav className="navbar navbar-light">
-          <ul className="nav navbar-nav">
-            <li><Link to="/">Homes</Link></li>
-            <li><Link to="/products">Products</Link></li>
-            <li><Link to="/category">Category</Link></li>
-          </ul> 
-        </nav>
-        <ShowTheLocation/>
-        <Switch>
-          <Route exact path="/" component={Home}/>
-          <Route path="/products" component={Products}/>
-          <Route path="/category" component={Category}/>
-          <Redirect to="/products"/>
-          <Route component={NoMatch}/>
-        </Switch>
-    </div>
-    );
+const Root = ({ route }) => (
+  <div>
+    <h1>Root</h1>
+    {/* child routes won't render without this */}
+    {renderRoutes(route.routes)}
+  </div>
+);
+
+const Home = ({ route }) => (
+  <div>
+    <h2>Home</h2>
+  </div>
+);
+
+const Child = ({ route }) => (
+  <div>
+    <h2>Child</h2>
+    {/* child routes won't render without this */}
+    {renderRoutes(route.routes, { someProp: "these extra props are optional" })}
+  </div>
+);
+
+const GrandChild = ({ someProp }) => (
+  <div>
+    <h3>Grand Child</h3>
+    <div>{someProp}</div>
+  </div>
+);
+
+const routes = [
+  {
+    component: Root,
+    routes: [
+      {
+        path: '/',
+        exact: true,
+        component: Home,
+      },
+      {
+        path: '/child/:id',
+        component: Child,
+        routes: [
+          {
+            path: '/child/:id/grand-child',
+            component: GrandChild
+          }
+        ]
+      }
+    ]
   }
-}
+]
 
-
-/*Home component */
-const Home = (props) => (
-  <div>
-    <h2>Home {console.log(props)}</h2>
-  </div>
-)
-
-/*Product component */
-const Products = () => (
-  <div>
-    <h2>Products</h2>
-  </div>
-)
-
-/*Category component*/
-const Category = (props) => {
-  console.log(props);
-return(
-  <div>
-    <h2>Category</h2>
-  </div>
-)}
-
-const NoMatch = () => {
-  return (<div>404</div>);
-}
+const App = renderRoutes(routes);
 
 
 export default App;
