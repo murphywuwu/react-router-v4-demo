@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Link, Route,Switch } from 'react-router-dom';
-
+import { Link, Route,Switch, Redirect } from 'react-router-dom';
+import ShowTheLocation from './ShowTheLocation';
 
 class App extends Component {
   render() {
@@ -13,14 +13,15 @@ class App extends Component {
             <li><Link to="/products">Products</Link></li>
             <li><Link to="/category">Category</Link></li>
           </ul> 
-       </nav>
-      
-    <Switch>
-      <Route exact path="/" component={Home}/>
-      <Route path="/products" component={Products}/>
-      <Route path="/category" component={Category}/> 
-    </Switch>
-    
+        </nav>
+        <ShowTheLocation/>
+        <Switch>
+          <Route exact path="/" component={Home}/>
+          <Route path="/products" component={Products}/>
+          <Route path="/category" component={Category}/>
+          <Redirect to="/products"/>
+          <Route component={NoMatch}/>
+        </Switch>
     </div>
     );
   }
@@ -42,12 +43,17 @@ const Products = () => (
 )
 
 /*Category component*/
-const Category = () => (
+const Category = (props) => {
+  console.log(props);
+return(
   <div>
     <h2>Category</h2>
   </div>
-)
+)}
 
+const NoMatch = () => {
+  return (<div>404</div>);
+}
 
 
 export default App;
